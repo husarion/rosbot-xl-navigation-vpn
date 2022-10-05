@@ -1,5 +1,5 @@
 x-vpn-config:
-  dds-discovery-server-client: &client_config
+  client_config: &client_config
     restart: unless-stopped
     network_mode: host
     ipc: host
@@ -7,7 +7,7 @@ x-vpn-config:
     environment:
       - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config-client
       - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
-  dds-discovery-server-server: &server_config
+  server_config: &server_config
     restart: unless-stopped
     network_mode: host
     ipc: host
@@ -16,7 +16,13 @@ x-vpn-config:
       - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config-server
       - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
 
-# ================================================================================
+configs:
+  dds-config-client:
+    file: ./dds-config.client.xml
+  dds-config-server:
+    file: ./dds-config.server.xml
+
+# ============================================================ #
 
 services:
 
@@ -63,10 +69,4 @@ services:
     image: husarion/rosbot-xl:humble
     command: ros2 launch rosbot_xl_bringup bringup.launch.py mecanum:=${MECANUM:-False}
 
-# ================================================================================
 
-configs:
-  dds-config-client:
-    file: ./dds-config.client.xml
-  dds-config-server:
-    file: ./dds-config.server.xml

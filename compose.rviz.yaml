@@ -1,5 +1,5 @@
 x-vpn-config:
-  dds-discovery-server-client: &client_config
+  client_config: &client_config
     restart: unless-stopped
     network_mode: host
     ipc: host
@@ -10,7 +10,11 @@ x-vpn-config:
       - DISPLAY=${DISPLAY:?err}
       - LIBGL_ALWAYS_SOFTWARE=1
 
-# ================================================================================
+configs:
+  dds-config-client:
+    file: ./dds-config.client.xml
+
+# ============================================================ #
 
 services:
 
@@ -21,8 +25,5 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ./config/rbxl.rviz:/root/.rviz2/default.rviz
 
-# ================================================================================
 
-configs:
-  dds-config-client:
-    file: ./dds-config.client.xml
+
