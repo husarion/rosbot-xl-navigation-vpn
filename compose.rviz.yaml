@@ -1,0 +1,28 @@
+x-vpn-config:
+  dds-discovery-server-client: &client_config
+    restart: unless-stopped
+    network_mode: host
+    ipc: host
+    configs: [ dds-config-client ]
+    environment:
+      - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config-client
+      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+      - DISPLAY=${DISPLAY:?err}
+      - LIBGL_ALWAYS_SOFTWARE=1
+
+# ================================================================================
+
+services:
+
+  rviz:
+    <<: *client_config
+    image: husarion/rviz2:humble
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ./config/rbxl.rviz:/root/.rviz2/default.rviz
+
+# ================================================================================
+
+configs:
+  dds-config-client:
+    file: ./dds-config.client.xml
