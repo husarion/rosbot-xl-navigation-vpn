@@ -52,7 +52,7 @@ Set dip switch no. 3 to **"off" state**  (`BOOT0` pin to LOW) and click the `RES
 docker compose -f compose.rosbot.mapping.yaml up
 ```
 
-### ROSbot XL
+### User's PC
 
 #### Configuring Husarnet VPN
 

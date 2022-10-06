@@ -1,68 +1,52 @@
 x-vpn-config:
   client_config: &client_config
-    restart: unless-stopped
     network_mode: host
     ipc: host
     configs: [ dds-config.client.xml ]
     env_file: dds/client.env
   server_config: &server_config
-    restart: unless-stopped
     network_mode: host
     ipc: host
     configs: [ dds-config.server.xml ]
     env_file: dds/server.env
+  simple_config: &simple_config
+    network_mode: host
+    ipc: host
+    configs: [ dds-config.simple.xml ]
+    env_file: dds/simple.env
 
 configs:
   dds-config.client.xml:
     file: ./dds/config.client.xml
   dds-config.server.xml:
     file: ./dds/config.server.xml
+  dds-config.simple.xml:
+    file: ./dds/config.simple.xml
 
 # ============================================================ #
 
 services:
 
-  navigation:
-    <<: *client_config
-    image: husarion/navigation2:humble
-    volumes:
-      - ./config/nav2_params_pure_pursuit.yaml:/nav2_params.yaml
-    command: >
-      ros2 launch nav2_bringup navigation_launch.py
-        params_file:=/nav2_params.yaml
-        use_sim_time:=${USE_SIM_TIME:-False}
-
-  mapping:
-    <<: *client_config
-    image: husarion/slam-toolbox:humble
-    container_name: slam-toolbox
-    volumes:
-      - ./config/slam_toolbox_params.yaml:/slam_params.yaml
-      - ./maps:/maps
-    command: >
-      ros2 launch slam_toolbox online_sync_launch.py
-        slam_params_file:=/slam_params.yaml
-        use_sim_time:=${USE_SIM_TIME:-False}
+  rosbot-xl:
+    # <<: *client_config
+    <<: *simple_config
+    image: husarion/rosbot-xl:humble
+    command: ros2 launch rosbot_xl_bringup bringup.launch.py mecanum:=${MECANUM:-False}
 
   rplidar:
-    <<: *client_config
+    # <<: *server_config
+    <<: *simple_config
     image: husarion/rplidar:humble
     devices:
-      - /dev/ttyUSB0
+      - /dev/ttyUSB0:/dev/ttyUSB0
     command: >
       ros2 launch sllidar_ros2 sllidar_launch.py
         serial_baudrate:=${RPLIDAR_BAUDRATE:-115200}
 
   microros:
-    <<: *client_config
+    # <<: *client_config
+    <<: *simple_config
     image: microros/micro-ros-agent:humble
     volumes:
       - ./micro-ros_entrypoint.sh:/micro-ros_entrypoint.sh
     command: udp4 --port 8888
-
-  rosbot-xl:
-    <<: *server_config
-    image: husarion/rosbot-xl:humble
-    command: ros2 launch rosbot_xl_bringup bringup.launch.py mecanum:=${MECANUM:-False}
-
-
