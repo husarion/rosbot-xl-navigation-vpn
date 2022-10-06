@@ -4,15 +4,11 @@ x-vpn-config:
     network_mode: host
     ipc: host
     configs: [ dds-config.client.xml ]
-    environment:
-      - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.client.xml
-      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
-      - DISPLAY=${DISPLAY:?err}
-      - LIBGL_ALWAYS_SOFTWARE=1
+    env_file: dds/client.env
 
 configs:
   dds-config.client.xml:
-    file: ./dds-config.client.xml
+    file: ./dds/config.client.xml
 
 # ============================================================ #
 
@@ -24,6 +20,9 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ./config/rbxl.rviz:/root/.rviz2/default.rviz
+    environment:
+      - DISPLAY=${DISPLAY:?err}
+      - LIBGL_ALWAYS_SOFTWARE=1
 
 
 

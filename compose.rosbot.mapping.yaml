@@ -4,23 +4,19 @@ x-vpn-config:
     network_mode: host
     ipc: host
     configs: [ dds-config.client.xml ]
-    environment:
-      - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.client.xml
-      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+    env_file: dds/client.env
   server_config: &server_config
     restart: unless-stopped
     network_mode: host
     ipc: host
     configs: [ dds-config.server.xml ]
-    environment:
-      - FASTRTPS_DEFAULT_PROFILES_FILE=/dds-config.server.xml
-      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+    env_file: dds/server.env
 
 configs:
   dds-config.client.xml:
-    file: ./dds-config.client.xml
+    file: ./dds/config.client.xml
   dds-config.server.xml:
-    file: ./dds-config.server.xml
+    file: ./dds/config.server.xml
 
 # ============================================================ #
 
