@@ -1,46 +1,19 @@
-x-vpn-config:
-  client_config: &client_config
-    network_mode: host
-    ipc: host
-    configs: [ dds-config.client.xml ]
-    env_file: dds/client.env
-  server_config: &server_config
-    network_mode: host
-    ipc: host
-    configs: [ dds-config.server.xml ]
-    env_file: dds/server.env
-  simple_config: &simple_config
-    network_mode: host
-    ipc: host
-    configs: [ dds-config.simple.xml ]
-    env_file: dds/simple.env
+x-dds-configs:
+  - &client_config { network_mode: host, ipc: host, configs: [ client.xml ], env_file: dds/client.env }
+  - &server_config { network_mode: host, ipc: host, configs: [ server.xml ], env_file: dds/server.env }
+  - &simple_config { network_mode: host, ipc: host, configs: [ simple.xml ], env_file: dds/simple.env }
 
-configs:
-  dds-config.client.xml:
-    file: ./dds/config.client.xml
-  dds-config.server.xml:
-    file: ./dds/config.server.xml
-  dds-config.simple.xml:
-    file: ./dds/config.simple.xml
+configs: 
+  client.xml: { file: dds/client.xml }
+  server.xml: { file: dds/server.xml }
+  simple.xml: { file: dds/simple.xml }
 
 # ============================================================ #
 
 services:
 
-  navigation:
-    # <<: *client_config
-    <<: *simple_config
-    image: husarion/navigation2:humble
-    volumes:
-      - ./config/nav2_params_pure_pursuit.yaml:/nav2_params.yaml
-    command: >
-      ros2 launch nav2_bringup navigation_launch.py
-        params_file:=/nav2_params.yaml
-        use_sim_time:=${USE_SIM_TIME:-False}
-
   mapping:
-    # <<: *client_config
-    <<: *simple_config
+    <<: *client_config
     image: husarion/slam-toolbox:humble
     container_name: slam-toolbox
     volumes:
@@ -51,9 +24,18 @@ services:
         slam_params_file:=/slam_params.yaml
         use_sim_time:=${USE_SIM_TIME:-False}
 
+  navigation:
+    <<: *client_config
+    image: husarion/navigation2:humble
+    volumes:
+      - ./config/nav2_params_pure_pursuit.yaml:/nav2_params.yaml
+    command: >
+      ros2 launch nav2_bringup navigation_launch.py
+        params_file:=/nav2_params.yaml
+        use_sim_time:=${USE_SIM_TIME:-False}
+
   rviz:
-    # <<: *client_config
-    <<: *simple_config
+    <<: *client_config
     image: husarion/rviz2:humble
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
