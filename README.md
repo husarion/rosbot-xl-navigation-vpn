@@ -39,9 +39,9 @@ Execute in a termianl on your laptop:
 
 ```bash
 docker run --rm -it \
---device /dev/ttyUSB0:/dev/ttyUSB0 \
+--device /dev/ttyUSBDB \
 husarion/rosbot-xl:humble \
-/stm32flash -w /firmware.bin -b 115200 -v /dev/ttyUSB0
+/stm32flash -w /firmware.bin -b 115200 -v /dev/ttyUSBDB
 ```
 
 Set dip switch no. 3 to **"off" state**  (`BOOT0` pin to LOW) and click the `RESET` button to start a newly flashed firmware.
