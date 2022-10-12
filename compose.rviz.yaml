@@ -18,7 +18,7 @@ services:
 
   rviz:
     <<: *client_config
-    image: husarion/rviz2:humble
+    image: husarion/rviz2:galactic
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ./config/rbxl.rviz:/root/.rviz2/default.rviz
