@@ -1,5 +1,9 @@
 # rosbot-xl-navigation-vpn
 
+> **warning**
+>
+> Archived. Use https://github.com/husarion/rosbot-xl-navigation repo instead.
+
 A GitHub template for ROSbot XL: autonomous navigation &amp; mapping
 
 ## Quick Start
